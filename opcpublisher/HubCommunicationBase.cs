@@ -228,17 +228,23 @@ namespace OpcPublisher
 
         /// <summary>
         /// Handle connection status change notifications.
+        /// If number of retries has reached defined maximum, process will exit. Because OpcUaPublisher does
+        /// not maintain reconnecting after retry has expired, we enforse the process to exit. In this case
+        /// host of OpcUaPublisher can restart publisher, which will reconnect again.
         /// </summary>
         public void ConnectionStatusChange(ConnectionStatus status, ConnectionStatusChangeReason reason)
         {
             if (reason == ConnectionStatusChangeReason.Connection_Ok || ShutdownTokenSource.IsCancellationRequested)
             {
-                Logger.Information($"Connection status changed to '{status}', reason '{reason}'");
+                Logger.Information($"Cancelation requested.");
             }
-            else
-            {
-                Logger.Error($"Connection status changed to '{status}', reason '{reason}'");
-            }
+
+            Logger.Error($"Connection status changed to '{status}', reason '{reason}'");
+
+            if (reason == ConnectionStatusChangeReason.Retry_Expired)
+            {               
+                Environment.Exit(-1);
+            }    
         }
 
         /// <summary>
@@ -320,13 +326,13 @@ namespace OpcPublisher
                             {
                                 desiredAuthenticationMode = OpcAuthenticationMode.Anonymous;
                             }
-                            
+
                             // create new session info.
                             opcSession = new OpcSession(endpointUri.OriginalString, useSecurity, OpcSessionCreationTimeout, desiredAuthenticationMode.Value, desiredEncryptedCredential);
                             NodeConfiguration.OpcSessions.Add(opcSession);
                             Logger.Information($"{logPrefix} No matching session found for endpoint '{endpointUri.OriginalString}'. Requested to create a new one.");
                         }
-                        else 
+                        else
                         {
                             // a session already exists, so we check, if we need to change authentication settings. This is only true, if the payload contains an OpcAuthenticationMode-Property
                             if (desiredAuthenticationMode.HasValue)
@@ -1089,8 +1095,7 @@ namespace OpcPublisher
                 {
                     getConfiguredNodesOnEndpointMethodResponse.ContinuationToken = (ulong)nodeConfigVersion << 32 | actualNodeCount + startIndex;
                 }
-                getConfiguredNodesOnEndpointMethodResponse.OpcNodes.AddRange(opcNodes.GetRange((int)startIndex, (int)actualNodeCount).Select(n => new OpcNodeOnEndpointModel(n.Id)
-                {
+                getConfiguredNodesOnEndpointMethodResponse.OpcNodes.AddRange(opcNodes.GetRange((int)startIndex, (int)actualNodeCount).Select(n => new OpcNodeOnEndpointModel(n.Id) {
                     OpcPublishingInterval = n.OpcPublishingInterval,
                     OpcSamplingInterval = n.OpcSamplingInterval,
                     DisplayName = n.DisplayName
