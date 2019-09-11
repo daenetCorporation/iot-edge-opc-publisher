@@ -236,15 +236,18 @@ namespace OpcPublisher
         {
             if (reason == ConnectionStatusChangeReason.Connection_Ok || ShutdownTokenSource.IsCancellationRequested)
             {
-                Logger.Information($"Cancelation requested.");
+                Logger.Information($"Connection status changed to '{status}', reason '{reason}'");
             }
+            else
+            {
+                Logger.Error($"Connection status changed to '{status}', reason '{reason}'");
 
-            Logger.Error($"Connection status changed to '{status}', reason '{reason}'");
-
-            if (reason == ConnectionStatusChangeReason.Retry_Expired)
-            {               
-                Environment.Exit(-1);
-            }    
+                if (reason == ConnectionStatusChangeReason.Retry_Expired)
+                {
+                    Logger.Error($"The process will be terminate for status '{status}' and reason '{reason}'");
+                    Environment.Exit(-1);
+                }
+            }
         }
 
         /// <summary>
