@@ -794,6 +794,24 @@ namespace OpcPublisher
                     e = e.InnerException ?? null;
                 }
                 Logger.Fatal("Publisher exiting... ");
+
+                //int n = 1000;
+                //while (--n > 0)
+                //{
+                //    e = e.InnerException ?? null;
+                //    while (e != null)
+                //    {
+                //        Logger.Fatal(e, e.StackTrace);
+                //        e = e.InnerException ?? null;
+                //        Console.WriteLine(e);
+                //    }
+                    
+                //    Thread.Sleep(3000);
+
+                //    Console.WriteLine("");
+                //    Console.WriteLine("");
+                //    Console.WriteLine("");
+                //}
             }
 
             // shutdown diagnostics

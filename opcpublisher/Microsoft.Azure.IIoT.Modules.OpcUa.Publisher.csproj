@@ -22,11 +22,11 @@
     <ProjectCapability Include="AzureIoTEdgeModule" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="publishednodes.json" />
+    <None Remove="publishednodes.original.json" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="publishednodes.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    <Content Include="publishednodes.original.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -41,6 +41,11 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.4" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="publishednodes.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <!--
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

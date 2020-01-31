@@ -1,0 +1,31 @@
+[
+  {
+    "EndpointUrl": "opc.tcp://localhost:5007",
+    "UseSecurity": false,
+    "OpcNodes": [
+      {
+        "Id": "ns=2;s=02",
+        "OpcSamplingInterval": 60000,
+        "OpcPublishingInterval": 60000
+      },
+      {
+        "Id": "ns=2;s=03",
+        "OpcPublishingInterval": 60000
+      },
+      {
+        "Id": "ns=2;s=04",
+        "OpcPublishingInterval": 60000
+      },
+      {
+        "Id": "ns=2;s=02",
+        "OpcSamplingInterval": 50000,
+        "OpcPublishingInterval": 60000
+      },
+      {
+        "Id": "ns=2;s=05",
+        "OpcSamplingInterval": 60000,
+        "OpcPublishingInterval": 60000
+      }
+    ]
+  }
+]
