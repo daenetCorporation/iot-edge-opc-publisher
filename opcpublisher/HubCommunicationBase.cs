@@ -228,6 +228,9 @@ namespace OpcPublisher
 
         /// <summary>
         /// Handle connection status change notifications.
+        /// If number of retries has reached defined maximum, process will exit. Because OpcUaPublisher does
+        /// not maintain reconnecting after retry has expired, we enforse the process to exit. In this case
+        /// host of OpcUaPublisher can restart publisher, which will reconnect again.
         /// </summary>
         public void ConnectionStatusChange(ConnectionStatus status, ConnectionStatusChangeReason reason)
         {
@@ -238,6 +241,12 @@ namespace OpcPublisher
             else
             {
                 Logger.Error($"Connection status changed to '{status}', reason '{reason}'");
+
+                if (reason == ConnectionStatusChangeReason.Retry_Expired)
+                {
+                    Logger.Error($"The process will be terminated for status '{status}' and reason '{reason}'");
+                    Environment.Exit(-1);
+                }
             }
         }
 
